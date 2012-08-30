@@ -16,6 +16,11 @@ node[:oh_my_zsh][:users].each do |user|
     not_if "test -d #{user_dir}/.oh-my-zsh"
   end
 
+  execute "Set zsh to default shell" do
+    command "chsh -s /bin/zsh #{user_name}"
+    not_if "test `getent passwd #{user_name} | cut -f 7 -d ':'` == '/bin/zsh'"
+  end
+
   template "#{user_dir}/.zshrc" do
     source "zshrc.erb"
     owner user_name
